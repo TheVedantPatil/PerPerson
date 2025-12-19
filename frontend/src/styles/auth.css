@@ -1,0 +1,43 @@
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f8fafc;
+  padding: 0 10%;
+}
+
+.auth-card {
+  background: white;
+  display: flex;
+  gap: 40px;
+  padding: 50px;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 1000px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+}
+
+.auth-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-section h2 {
+  margin-bottom: 8px;
+}
+
+.auth-section input {
+  margin-bottom: 15px;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+}
+
+.divider {
+  width: 1px;
+  background: #e5e7eb;
+}

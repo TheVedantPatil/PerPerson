@@ -1,0 +1,166 @@
+/* root */
+.dashboard-root {
+  min-height: 100vh;
+  background: #f6f7fb;
+}
+
+/* container */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* header */
+.header {
+  height: 80px;
+  background: white;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.nav {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: 1.9rem;
+  font-weight: 900;
+  color: #005c38;
+}
+
+button.logout-btn {
+  background: red;
+  border: none;
+  border-radius: 12px;
+}
+
+/* main content */
+.dashboard-content {
+  padding: 3rem 0;
+}
+
+/* SUMMARY CARD */
+.summary-card {
+  background: #2fb594;
+  color: white;
+  border-radius: 18px;
+  padding: 24px;
+}
+
+.user-details h2 { 
+  font-size: 32px;
+}
+
+.user-details strong { 
+  font-weight: 900;
+  font-size: 18px;
+}
+
+.summary-split {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.summary-split .divider {
+  width: 1px;
+  height: 40px;
+}
+
+/* Create and join group grid */
+.action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 30px 0;
+}
+
+.action-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+
+/*  user groups section */
+.group-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.group-item {
+  background: white;
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.group-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+}
+
+
+.group-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #10b981, #045f6e);
+  color: white;
+  font-weight: 600;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.group-info h4 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.group-info p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+
+.group-status {
+  margin-left: auto;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+
+
+
+/* GROUP STATUS COLORS */
+.group-status {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.group-status.owed {
+  color: #16a34a; /* green */
+}
+
+.group-status.owe {
+  color: #dc2626; /* red */
+}
+
+.group-status.settled {
+  color: #6b7280; /* gray */
+}
+
