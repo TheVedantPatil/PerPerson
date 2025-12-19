@@ -2,10 +2,10 @@
 
 git clone
 
-cd frontend
-npm install
+cd frontend__
+npm install__
 nppm run dev
 
-cd backend
-pip install -r requirements.txt
+cd backend__
+pip install -r requirements.txt__
 uvicorn main:app --reload
