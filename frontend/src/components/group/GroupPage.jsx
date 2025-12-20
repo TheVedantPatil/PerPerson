@@ -142,7 +142,7 @@ function GroupPage({ group, user, onBack }) {
                 <li key={bal.user_id} className="balance-item">
                   <span>{userMap[bal.user_id] || bal.user_id}</span>
                   <span className={bal.balance >= 0 ? "positive" : "negative"}>
-                    ₹{bal.balance}
+                    ₹ {bal.balance}
                   </span>
                 </li>
               ))}
@@ -158,7 +158,7 @@ function GroupPage({ group, user, onBack }) {
               {settlements.map((s, index) => (
                 <li key={index}>
                   <strong>{userMap[s.from] || s.from}</strong> pays{" "}
-                  <strong>{userMap[s.to] || s.to}</strong> ₹{s.amount}
+                  <strong>{userMap[s.to] || s.to}</strong> ₹ {s.amount}
                 </li>
               ))}
             </ul>

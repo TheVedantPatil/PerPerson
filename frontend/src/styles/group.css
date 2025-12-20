@@ -2,7 +2,7 @@
   padding: 3rem 0;
 }
 
-/* group header */
+/* ---------- group header ---------- */
 .group-header-card {
   background: linear-gradient(135deg, #045f6e, #10b981);
   color: white;
@@ -32,7 +32,8 @@
   cursor: pointer;
 }
 
-/* gorup grid */
+
+/* ---------- group grid | rows ---------- */
 .group-grid {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -47,42 +48,57 @@
   gap: 25px;
 }
 
-/* group balance */
-.balance-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
 
-.balance-item {
+
+/* ---------- add expense form ---------- */
+.add-expense {
   display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid #f1f1f1;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.balance-item:last-child {
-  border-bottom: none;
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
 }
 
-.positive {
-  color: #16a34a;
+.label {
+  font-size: 14px;
+  color: #374151;
   font-weight: 600;
 }
 
-.negative {
-  color: #dc2626;
-  font-weight: 600;
+/* members chip */
+.member-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
-/* settlements  */
-.settlement-list li {
-  margin-bottom: 8px;
+.member-chip {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.member-chip:hover {
+  background: #e5e7eb;
+}
+
+.member-chip.active {
+  background: #6366f1;
+  color: white;
 }
 
 
 
-/* expense list */
+/* ---------- expense list tab ----------*/
 .expense-list {
   display: flex;
   flex-direction: column;
@@ -134,74 +150,37 @@
   text-decoration: underline;
 }
 
-/* ADD EXPENSE FORM */
-.add-expense {
+
+
+/* ---------- group balance tab ---------- */
+.balance-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.balance-item {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f1f1;
 }
 
-.form-row {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.balance-item:last-child {
+  border-bottom: none;
 }
 
-.label {
-  font-size: 14px;
-  color: #374151;
+.positive {
+  color: #16a34a;
+  font-weight: 600;
 }
 
-.input {
-  padding: 10px 14px;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  font-size: 14px;
+.negative {
+  color: #dc2626;
+  font-weight: 600;
 }
 
-.input:focus {
-  outline: none;
-  border-color: #6366f1;
+/* ---------- group settlements tab ---------- */
+.settlement-list li {
+  margin-bottom: 8px;
 }
-
-/* MEMBER CHIPS */
-.member-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.member-chip {
-  padding: 8px 14px;
-  border-radius: 999px;
-  background: #f3f4f6;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.member-chip:hover {
-  background: #e5e7eb;
-}
-
-.member-chip.active {
-  background: #6366f1;
-  color: white;
-}
-
-/* PRIMARY BUTTON */
-.primary-btn {
-  margin-top: 10px;
-  background: #6366f1;
-  color: white;
-  border: none;
-  border-radius: 14px;
-  padding: 12px;
-  font-size: 15px;
-  cursor: pointer;
-}
-
-.primary-btn:hover {
-  background: #4f46e5;
-}
-

@@ -21,7 +21,7 @@ function ExpenseList({ expenses, userMap, onDelete }) {
             </div>
 
             <div className="expense-amount">
-              ₹{exp.total_amount}
+              ₹ {exp.total_amount}
             </div>
           </div>
 

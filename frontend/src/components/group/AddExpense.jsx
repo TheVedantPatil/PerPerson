@@ -42,14 +42,12 @@ function AddExpense({ members, onAdd }) {
     <div className="add-expense">
       <div className="form-row">
         <input
-          className="input"
           placeholder="Expense description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
 
         <input
-          className="input"
           type="number"
           placeholder="Amount"
           value={amount}
@@ -60,7 +58,6 @@ function AddExpense({ members, onAdd }) {
       <div className="form-row">
         <label className="label">Paid by</label>
         <select
-          className="input"
           value={paidBy}
           onChange={(e) => setPaidBy(e.target.value)}
         >
