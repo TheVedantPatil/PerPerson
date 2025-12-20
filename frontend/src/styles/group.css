@@ -1,4 +1,4 @@
-.group-container { 
+.group-container {
   padding: 3rem 0;
 }
 
@@ -14,14 +14,14 @@
   margin-bottom: 30px;
 }
 
-.group-title { 
+.group-title {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.group-title span { 
+.group-title span {
   font-weight: 900;
 }
 
@@ -31,7 +31,6 @@
   font-size: 16px;
   cursor: pointer;
 }
-
 
 /* ---------- group grid | rows ---------- */
 .group-grid {
@@ -47,8 +46,6 @@
   flex-direction: column;
   gap: 25px;
 }
-
-
 
 /* ---------- add expense form ---------- */
 .add-expense {
@@ -96,13 +93,16 @@
   color: white;
 }
 
-
-
 /* ---------- expense list tab ----------*/
+.expense h3 { 
+  margin-left: 8px;
+}
+
 .expense-list {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  margin-top: 10px;
 }
 
 .expense-item {
@@ -141,7 +141,7 @@
   background: none;
   border: none;
   color: #dc2626;
-  font-size: 13px;
+  font-size: 14px;
   cursor: pointer;
   padding: 0;
 }
@@ -149,8 +149,6 @@
 .expense-delete:hover {
   text-decoration: underline;
 }
-
-
 
 /* ---------- group balance tab ---------- */
 .balance-list {
@@ -180,7 +178,47 @@
   font-weight: 600;
 }
 
-/* ---------- group settlements tab ---------- */
-.settlement-list li {
-  margin-bottom: 8px;
+/* settlements tab */
+.settlement-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+  max-height: 250px;
+  overflow: auto;
+}
+
+.settlement-item {
+  background: #f4f4f4;
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.settlement-users {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.payer {
+  font-weight: 600;
+  color: #dc2626;
+}
+
+.receiver {
+  font-weight: 600;
+  color: #16a34a;
+}
+
+.arrow {
+  opacity: 0.6;
+}
+
+.settlement-amount {
+  font-weight: 600;
+  font-size: 15px;
 }

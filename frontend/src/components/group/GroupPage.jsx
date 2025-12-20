@@ -26,8 +26,9 @@ function GroupPage({ group, user, onBack }) {
 
       const map = {};
       data.forEach((m) => {
-        map[m.user_id] = m.name;
+        map[m.user_id] = m.name.split(" ")[0];
       });
+
       setUserMap(map);
     });
 
@@ -91,7 +92,7 @@ function GroupPage({ group, user, onBack }) {
           <div>
             <h2>{group.name}</h2>
             <p className="group-code">
-              Group Code: 
+              Group Code:
               <span> {group.join_code}</span>
             </p>
           </div>
@@ -105,7 +106,6 @@ function GroupPage({ group, user, onBack }) {
 
       {/* main content group */}
       <div className="group-grid">
-
         {/* left side */}
         <div className="group-left">
           <div className="card">
@@ -113,7 +113,7 @@ function GroupPage({ group, user, onBack }) {
             <AddExpense members={members} onAdd={handleAddExpense} />
           </div>
 
-          <div className="card">
+          <div className="card expense">
             <h3>Expenses</h3>
 
             {expenses.length === 0 && (
@@ -142,14 +142,14 @@ function GroupPage({ group, user, onBack }) {
                 <li key={bal.user_id} className="balance-item">
                   <span>{userMap[bal.user_id] || bal.user_id}</span>
                   <span className={bal.balance >= 0 ? "positive" : "negative"}>
-                    ₹ {bal.balance}
+                    ₹ {Number(bal.balance).toFixed(2)}
                   </span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="card">
+          {/* <div className="card">
             <h3>Settlements</h3>
 
             {settlements.length === 0 && <p className="muted">All settled</p>}
@@ -158,10 +158,36 @@ function GroupPage({ group, user, onBack }) {
               {settlements.map((s, index) => (
                 <li key={index}>
                   <strong>{userMap[s.from] || s.from}</strong> pays{" "}
-                  <strong>{userMap[s.to] || s.to}</strong> ₹ {s.amount}
+                  <strong>{userMap[s.to] || s.to}</strong> ₹{" "}
+                  {Number(s.amount).toFixed(2)}
                 </li>
               ))}
             </ul>
+          </div> */}
+
+          {/* SETTLEMENTS */}
+          <div className="card s-card">
+            <h3>Settlements</h3>
+
+            {settlements.length === 0 && (
+              <p className="muted">All settled 🎉</p>
+            )}
+
+            <div className="settlement-list">
+              {settlements.map((s, index) => (
+                <div key={index} className="settlement-item">
+                  <div className="settlement-users">
+                    <span className="payer">{userMap[s.from] || s.from}</span>
+                    <span className="arrow">pays</span>
+                    <span className="receiver">{userMap[s.to] || s.to}</span>
+                  </div>
+
+                  <div className="settlement-amount">
+                    ₹{Number(s.amount).toFixed(2)}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
