@@ -1,6 +1,71 @@
 /* Reset & base */
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 
+:root {
+
+  /* primary / dashboard */
+  --primary-500: #2FB594;   /* Main dashboard, navbar */
+  --primary-400: #4FC6AA;   /* Hover / active */
+  --primary-300: #7ED8C4;   /* Soft highlights */
+  --primary-100: #E3F6F1;   /* Light background tint */
+
+  /* background */
+  --bg-main: #F9FBFA;       /* App background */
+  --bg-section: #F1FAF7;    /* Dashboard sections */
+  --bg-card: #FFFFFF;      /* Cards / modals */
+
+  /* cards */
+  --card-border: #E0E0E0;   
+  --card-hover: #F1FAF7;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  /* text colors */
+  --text-primary: #1F2933;   /* Main text */
+  --text-secondary: #616E7C; /* Sub text */
+  --text-muted: #9AA5B1;     /* Disabled / hints */
+  --text-inverse: #FFFFFF;  /* On dark buttons */
+
+  /* money */
+  --money-positive: #2FB594;
+  --money-positive-bg: #E3F6F1;
+
+  --money-negative: #D32F2F;
+  --money-negative-bg: #FDECEA;
+
+  /* buttons */
+  --btn-primary-bg: #2FB594;
+  --btn-primary-hover: #4FC6AA;
+  --btn-primary-text: #FFFFFF;
+
+  --btn-secondary-bg: #E3F6F1;
+  --btn-secondary-hover: #C9EFE5;
+  --btn-secondary-text: #2FB594;
+
+  --btn-danger-bg: #D32F2F;
+  --btn-danger-hover: #E53935;
+  --btn-danger-text: #FFFFFF;
+
+  /* icons */
+  --icon-primary: #2FB594;
+  --icon-muted: #9AA5B1;
+
+  /* input */
+  --input-bg: #FFFFFF;
+  --input-border: #CBD5E1;
+  --input-focus: #2FB594;
+  --input-placeholder: #9AA5B1;
+
+  /* divider */
+  --divider: #E5E7EB;
+
+  /* status codes */
+  --success: #2FB594;
+  --warning: #F9A825;
+  --info: #0288D1;
+  --error: #D32F2F;
+}
+
+
 * {
   margin: 0;
   padding: 0;
@@ -11,8 +76,9 @@ body {
   /* font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; */
   font-family: "Poppins", sans-serif;
-  background-color: #f5f7fb;
-  color: #111827;
+  /* background-color: #f5f7fb; */
+  background-color: var(--bg-main);
+  color: var(--text-primary);
 }
 
 /* Inputs */
@@ -21,14 +87,15 @@ select {
   width: 100%;
   padding: 12px 14px;
   border-radius: 12px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--input-border);
   font-size: 14px;
 }
 
 input:focus,
 select:focus {
   outline: none;
-  border-color: #10b981;
+  /* border-color: #10b981; */
+  border-color: var(--input-focus);
 }
 
 /* Buttons */
@@ -36,44 +103,39 @@ button {
   padding: 10px 14px;
   border-radius: 8px;
   border: none;
-  background-color: #10b981;
-  color: white;
+  /* background-color: #10b981; */
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
   font-size: 14px;
   cursor: pointer;
 }
 
-button.primary {
-  margin-top: 10px;
-  padding: 14px;
-  border-radius: 14px;
-  border: none;
-  background: #10b981;
-  color: white;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
 button.primary:hover {
-  background: #059669;
+  background: var(--btn-primary-hover);
 }
 
 button:hover {
   opacity: 0.9;
 }
 
-/* Muted text */
+/* muted text */
 .muted {
-  color: #6b7280;
+  color: var(--text-muted);
   font-style: italic;
 }
 
 /* Card (reusable) */
 .card {
-  background: white;
+  background: var(--bg-secondary);
   padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06); */
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease;
+}
+
+.card:hover { 
+  background: var(--card-hover);
 }
 
 /* Lists */

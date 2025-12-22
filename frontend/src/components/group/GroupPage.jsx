@@ -3,6 +3,8 @@ import AddExpense from "./AddExpense";
 import ExpenseList from "./ExpenseList";
 import "../../styles/group.css";
 
+
+
 import {
   addExpense,
   getGroupExpenses,
@@ -170,7 +172,8 @@ function GroupPage({ group, user, onBack }) {
             <h3>Settlements</h3>
 
             {settlements.length === 0 && (
-              <p className="muted">All settled 🎉</p>
+              <p className="muted">All settled</p>
+              // <h3> Lets go for a <FaTrashAlt/>? </h3>
             )}
 
             <div className="settlement-list">

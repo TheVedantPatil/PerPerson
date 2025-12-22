@@ -94,9 +94,9 @@
 }
 
 /* ---------- expense list tab ----------*/
-.expense h3 { 
+/* .expense h3 { 
   margin-left: 8px;
-}
+} */
 
 .expense-list {
   display: flex;
@@ -144,10 +144,6 @@
   font-size: 14px;
   cursor: pointer;
   padding: 0;
-}
-
-.expense-delete:hover {
-  text-decoration: underline;
 }
 
 /* ---------- group balance tab ---------- */

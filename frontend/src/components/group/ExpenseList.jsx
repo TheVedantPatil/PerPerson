@@ -1,3 +1,6 @@
+import { FaTrashAlt } from "react-icons/fa";
+
+
 function ExpenseList({ expenses, userMap, onDelete }) {
   if (!expenses || expenses.length === 0) {
     return <p className="muted">No expenses yet</p>;
@@ -29,7 +32,7 @@ function ExpenseList({ expenses, userMap, onDelete }) {
             className="expense-delete"
             onClick={() => onDelete(exp.expense_id)}
           >
-            Delete
+          <h3><FaTrashAlt/></h3>
           </button>
         </div>
       ))}
