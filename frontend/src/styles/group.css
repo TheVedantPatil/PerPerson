@@ -10,7 +10,6 @@
   border-radius: 20px;
   display: flex;
   align-items: center;
-  gap: 20px;
   margin-bottom: 30px;
 }
 
@@ -26,10 +25,13 @@
 }
 
 .back-btn {
-  background: none;
-  border: none;
+  background-color: transparent;
   font-size: 16px;
   cursor: pointer;
+}
+
+.back-btn:hover { 
+  background-color: var(--primary-500);
 }
 
 /* ---------- group grid | rows ---------- */
@@ -78,18 +80,19 @@
 .member-chip {
   padding: 8px 14px;
   border-radius: 999px;
-  background: #f3f4f6;
+  background: #c0dfe4;
   font-size: 13px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .member-chip:hover {
-  background: #e5e7eb;
+  background: var(--primary-400);
+  color: white;
 }
 
 .member-chip.active {
-  background: #6366f1;
+  background: var(--primary-500);
   color: white;
 }
 
@@ -106,7 +109,8 @@
 }
 
 .expense-item {
-  background: #f9fafb;
+  background: #f4f4f4;
+  /* box-shadow: var(--card-shadow); */
   border-radius: 14px;
   padding: 14px 16px;
   display: flex;
@@ -165,12 +169,12 @@
 }
 
 .positive {
-  color: #16a34a;
+  color: var(--money-positive);
   font-weight: 600;
 }
 
 .negative {
-  color: #dc2626;
+  color: var(--money-negative);
   font-weight: 600;
 }
 

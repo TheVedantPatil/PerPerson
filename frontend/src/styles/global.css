@@ -126,10 +126,9 @@ button:hover {
 
 /* Card (reusable) */
 .card {
-  background: var(--bg-secondary);
+  background: var(--bg-card);
   padding: 20px;
   border-radius: 12px;
-  /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06); */
   box-shadow: var(--card-shadow);
   transition: all 0.3s ease;
 }
@@ -139,6 +138,6 @@ button:hover {
 }
 
 /* Lists */
-ul {
+/* ul {
   padding-left: 18px;
-}
+} */

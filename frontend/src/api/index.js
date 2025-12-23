@@ -1,9 +1,7 @@
 const BASE_URL = "http://127.0.0.1:8000";
 
-// --------------------
-// USER / AUTH
-// --------------------
 
+// USER / AUTH
 export async function signup(data) {
   const res = await fetch(`${BASE_URL}/signup`, {
     method: "POST",
@@ -44,10 +42,8 @@ export async function login(data) {
 }
 
 
-// --------------------
-// GROUPS
-// --------------------
 
+// GROUPS
 export async function getUserGroups(userId) {
   const res = await fetch(`${BASE_URL}/users/${userId}/groups`);
   return res.json();
@@ -76,13 +72,19 @@ export async function joinGroup(userId, joinCode) {
     }),
   });
 
-  return res.json();
+  const data = await res.json();
+
+  if (!res.ok) {
+    // backend error → throw
+    throw new Error(data.detail || "Failed to join group");
+  }
+
+  return data;
 }
 
-// --------------------
-// GROUP DATA
-// --------------------
 
+
+// GROUP DATA
 export async function getGroupMembers(groupId) {
   const res = await fetch(`${BASE_URL}/groups/${groupId}/members`);
   return res.json();
@@ -98,10 +100,8 @@ export async function getGroupSettlements(groupId) {
   return res.json();
 }
 
-// --------------------
-// EXPENSES
-// --------------------
 
+// EXPENSES
 export async function addExpense(expenseData) {
   const res = await fetch(`${BASE_URL}/expenses`, {
     method: "POST",
@@ -121,6 +121,23 @@ export async function deleteExpense(expenseId) {
   const res = await fetch(`${BASE_URL}/expenses/${expenseId}`, {
     method: "DELETE",
   });
+
+  return res.json();
+}
+
+// DELETE GROUP  
+export async function deleteGroup(groupId, userId) {
+  const res = await fetch(
+    `http://127.0.0.1:8000/groups/${groupId}?user_id=${userId}`,
+    {
+      method: "DELETE",
+    }
+  );
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.detail || "Delete failed");
+  }
 
   return res.json();
 }

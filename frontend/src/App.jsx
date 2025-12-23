@@ -4,32 +4,28 @@ import AuthPage from "./components/auth/AuthPage";
 
 function App() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const saved = localStorage.getItem("user");
     if (saved) {
       setUser(JSON.parse(saved));
     }
+    setLoading(false);
   }, []);
 
-  // 🔴 LOGOUT HANDLER
   const handleLogout = () => {
     localStorage.removeItem("user");
     setUser(null);
   };
 
-  // If not logged in → show auth
+  if (loading) return null; // ✅ prevents auth flash
+
   if (!user) {
     return <AuthPage onAuth={setUser} />;
   }
 
-  // Logged in → dashboard
-  return (
-    <Dashboard
-      user={user}
-      onLogout={handleLogout}
-    />
-  );
+  return <Dashboard user={user} onLogout={handleLogout} />;
 }
 
 export default App;

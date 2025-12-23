@@ -1,7 +1,6 @@
 /* root */
 .dashboard-root {
   min-height: 100vh;
-  /* background: #f6f7fb; */
   background: var(--bg-main);
 }
 
@@ -15,8 +14,6 @@
 /* header */
 .header {
   height: 80px;
-  background: white;
-  /* box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); */
   box-shadow: var(--card-shadow);
 }
 
@@ -30,20 +27,20 @@
 .logo {
   font-size: 1.9rem;
   font-weight: 900;
-  color: #005c38;
+  /* color: #005c38; */
+  color: var(--primary-500);
 }
 
-button.logout-btn {
+button.danger-btn {
   background-color: var(--btn-danger-bg);
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
 }
 
-button.logout-btn {
-  background-color: var(--btn-danger-hover);
-  border: none;
-  border-radius: 12px;
+button.danger-btn:hover { 
+  background: var(--btn-danger-hover);
 }
+
 
 /* main content */
 .dashboard-content {
@@ -52,10 +49,10 @@ button.logout-btn {
 
 /* SUMMARY CARD */
 .summary-card {
-  background: var(--primary-500);
-  /* background: var(--green-400); */
+  /* background: var(--primary-500); */
+  background: linear-gradient(160deg, var(--primary-500), var(--primary-300));
   color: white;
-  border-radius: 18px;
+  border-radius: 22px;
   padding: 24px;
 }
 
@@ -104,6 +101,7 @@ button.logout-btn {
 
 .group-item {
   background: white;
+  box-shadow: var(--card-shadow);
   border-radius: 18px;
   padding: 16px;
   display: flex;

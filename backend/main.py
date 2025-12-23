@@ -12,7 +12,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Vite frontend
+    allow_origins=["http://localhost:5173"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -352,3 +352,56 @@ def login(data: schemas.UserLogin, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
     return user
+
+
+@app.delete("/groups/{group_id}")
+def delete_group(
+    group_id: str,
+    user_id: str,
+    db: Session = Depends(get_db)
+):
+    
+    group = (
+        db.query(models.Group)
+        .filter(models.Group.group_id == group_id)
+        .first()
+    )
+
+    if not group:
+        raise HTTPException(status_code=404, detail="Group not found")
+
+    if group.created_by != user_id:
+        raise HTTPException(
+            status_code=403,
+            detail="Only group creator can delete this group"
+        )
+    
+    expense_ids = (
+        db.query(models.Expense.expense_id)
+        .filter(models.Expense.group_id == group_id)
+        .all()
+    )
+
+    expense_ids = [e[0] for e in expense_ids]
+
+    if expense_ids:
+        db.query(models.ExpenseSplit).filter(
+            models.ExpenseSplit.expense_id.in_(expense_ids)
+        ).delete(synchronize_session=False)
+
+    db.query(models.Expense).filter(
+        models.Expense.group_id == group_id
+    ).delete(synchronize_session=False)
+
+    db.query(models.GroupMember).filter(
+        models.GroupMember.group_id == group_id
+    ).delete(synchronize_session=False)
+
+    db.query(models.Group).filter(
+        models.Group.group_id == group_id
+    ).delete(synchronize_session=False)
+
+    db.commit()
+
+    return {"message": "Group deleted successfully"}
+

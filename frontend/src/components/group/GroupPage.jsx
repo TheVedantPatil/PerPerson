@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import AddExpense from "./AddExpense";
 import ExpenseList from "./ExpenseList";
 import "../../styles/group.css";
-
-
+import { deleteGroup } from "../../api";
+import { toast } from "react-toastify";
 
 import {
   addExpense,
@@ -14,76 +14,93 @@ import {
   getGroupMembers,
 } from "../../api";
 
-function GroupPage({ group, user, onBack }) {
+function GroupPage({ group, user, onBack, onGroupDeleted }) {
   const [balances, setBalances] = useState([]);
   const [settlements, setSettlements] = useState([]);
   const [members, setMembers] = useState([]);
   const [userMap, setUserMap] = useState({});
   const [expenses, setExpenses] = useState([]);
 
-  // initialize the data load
+  // initial data load
   useEffect(() => {
-    getGroupMembers(group.group_id).then((data) => {
+    loadAll();
+  }, [group]);
+
+  const loadAll = async () => {
+    try {
+      const data = await getGroupMembers(group.group_id);
       setMembers(data);
 
       const map = {};
       data.forEach((m) => {
         map[m.user_id] = m.name.split(" ")[0];
       });
-
       setUserMap(map);
-    });
 
-    getGroupBalances(group.group_id).then((data) => {
-      const balanceArray = Object.entries(data).map(([userId, balance]) => ({
-        user_id: userId,
-        balance,
-      }));
-      setBalances(balanceArray);
-    });
+      const bal = await getGroupBalances(group.group_id);
+      setBalances(
+        Object.entries(bal).map(([u, b]) => ({ user_id: u, balance: b }))
+      );
 
-    getGroupSettlements(group.group_id).then(setSettlements);
-    getGroupExpenses(group.group_id).then(setExpenses);
-  }, [group]);
+      setSettlements(await getGroupSettlements(group.group_id));
+      setExpenses(await getGroupExpenses(group.group_id));
+    } catch {
+      toast.error("Failed to load group data");
+    }
+  };
 
   // add expense
   const handleAddExpense = async (data) => {
-    const splitAmount = data.total_amount / data.participants.length;
+    try {
+      const splitAmount = data.total_amount / data.participants.length;
 
-    const splits = data.participants.map((userId) => ({
-      user_id: userId,
-      amount: splitAmount,
-    }));
+      await addExpense({
+        group_id: group.group_id,
+        paid_by: data.paid_by,
+        total_amount: data.total_amount,
+        description: data.description,
+        splits: data.participants.map((u) => ({
+          user_id: u,
+          amount: splitAmount,
+        })),
+      });
 
-    await addExpense({
-      group_id: group.group_id,
-      paid_by: data.paid_by,
-      total_amount: data.total_amount,
-      description: data.description,
-      splits,
-    });
-
-    refreshAll();
+      toast.success("Expense added");
+      loadAll();
+    } catch {
+      toast.error("Failed to add expense");
+    }
   };
 
   // delete expense
-  const handleDeleteExpense = async (expenseId) => {
-    await deleteExpense(expenseId);
-    refreshAll();
+  const handleDeleteExpense = async (id) => {
+    try {
+      await deleteExpense(id);
+      toast.success("Expense deleted");
+      loadAll();
+    } catch {
+      toast.error("Failed to delete expense");
+    }
   };
 
-  const refreshAll = () => {
-    getGroupExpenses(group.group_id).then(setExpenses);
+  // delete group
+  const handleDeleteGroup = async () => {
+    const ok = window.confirm(
+      "This will permanently delete the group. Continue?"
+    );
+    if (!ok) return;
 
-    getGroupBalances(group.group_id).then((data) => {
-      const balanceArray = Object.entries(data).map(([userId, balance]) => ({
-        user_id: userId,
-        balance,
-      }));
-      setBalances(balanceArray);
-    });
+    try {
+      await deleteGroup(group.group_id, user.user_id);
+      toast.success("Group deleted");
 
-    getGroupSettlements(group.group_id).then(setSettlements);
+      // notify dashboard immediately
+      onGroupDeleted(group.group_id);
+
+      onBack();
+    } catch {
+      toast.error("Failed to delete group");
+    }
   };
 
   return (
@@ -94,21 +111,26 @@ function GroupPage({ group, user, onBack }) {
           <div>
             <h2>{group.name}</h2>
             <p className="group-code">
-              Group Code:
-              <span> {group.join_code}</span>
+              Group Code:<span> {group.join_code}</span>
             </p>
           </div>
 
-          {/* back button */}
-          <button className="back-btn" onClick={onBack}>
-            Back
-          </button>
+          <div style={{ display: "flex", gap: "10px" }}>
+            <button className="back-btn" onClick={onBack}>
+              Back
+            </button>
+
+            {group.created_by === user.user_id && (
+              <button className="danger-btn" onClick={handleDeleteGroup}>
+                Delete Group
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* main content group */}
+      {/* main content */}
       <div className="group-grid">
-        {/* left side */}
         <div className="group-left">
           <div className="card">
             <h3>Add Expense</h3>
@@ -132,7 +154,6 @@ function GroupPage({ group, user, onBack }) {
           </div>
         </div>
 
-        {/* RIGHT side */}
         <div className="group-right">
           <div className="card">
             <h3>Balances</h3>
@@ -140,51 +161,32 @@ function GroupPage({ group, user, onBack }) {
             {balances.length === 0 && <p className="muted">No balances yet</p>}
 
             <ul className="balance-list">
-              {balances.map((bal) => (
-                <li key={bal.user_id} className="balance-item">
-                  <span>{userMap[bal.user_id] || bal.user_id}</span>
-                  <span className={bal.balance >= 0 ? "positive" : "negative"}>
-                    ₹ {Number(bal.balance).toFixed(2)}
+              {balances.map((b) => (
+                <li key={b.user_id} className="balance-item">
+                  <span>{userMap[b.user_id] || b.user_id}</span>
+                  <span className={b.balance >= 0 ? "positive" : "negative"}>
+                    ₹ {Number(b.balance).toFixed(2)}
                   </span>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* <div className="card">
-            <h3>Settlements</h3>
-
-            {settlements.length === 0 && <p className="muted">All settled</p>}
-
-            <ul className="settlement-list">
-              {settlements.map((s, index) => (
-                <li key={index}>
-                  <strong>{userMap[s.from] || s.from}</strong> pays{" "}
-                  <strong>{userMap[s.to] || s.to}</strong> ₹{" "}
-                  {Number(s.amount).toFixed(2)}
-                </li>
-              ))}
-            </ul>
-          </div> */}
-
-          {/* SETTLEMENTS */}
           <div className="card s-card">
             <h3>Settlements</h3>
 
             {settlements.length === 0 && (
               <p className="muted">All settled</p>
-              // <h3> Lets go for a <FaTrashAlt/>? </h3>
             )}
 
             <div className="settlement-list">
-              {settlements.map((s, index) => (
-                <div key={index} className="settlement-item">
+              {settlements.map((s, i) => (
+                <div key={i} className="settlement-item">
                   <div className="settlement-users">
-                    <span className="payer">{userMap[s.from] || s.from}</span>
+                    <span className="payer">{userMap[s.from]}</span>
                     <span className="arrow">pays</span>
-                    <span className="receiver">{userMap[s.to] || s.to}</span>
+                    <span className="receiver">{userMap[s.to]}</span>
                   </div>
-
                   <div className="settlement-amount">
                     ₹{Number(s.amount).toFixed(2)}
                   </div>
