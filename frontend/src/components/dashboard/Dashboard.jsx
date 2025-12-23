@@ -140,7 +140,7 @@ function Dashboard({ user, onLogout }) {
                 value={groupName}
                 onChange={(e) => setGroupName(e.target.value)}
               />
-              <button
+              <button className="primary"
                 onClick={async () => {
                   if (!groupName) {
                     toast.error("Group name required");
@@ -177,7 +177,7 @@ function Dashboard({ user, onLogout }) {
                 value={joinCode}
                 onChange={(e) => setJoinCode(e.target.value)}
               />
-              <button
+              <button className="primary"
                 onClick={async () => {
                   if (!joinCode) {
                     toast.error("Enter a group code");
@@ -201,7 +201,7 @@ function Dashboard({ user, onLogout }) {
                     setJoinCode("");
                     toast.success("Joined group successfully");
                   } catch (err) {
-                    // ✅ invalid / random code handled here
+                    // invalid / random code handled here
                     toast.error(err?.message || "Invalid group code");
                   }
                 }}
