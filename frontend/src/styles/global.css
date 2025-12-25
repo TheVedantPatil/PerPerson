@@ -4,15 +4,15 @@
 :root {
 
   /* primary / dashboard */
-  --primary-500: #2FB594;   /* Main dashboard, navbar */
-  --primary-400: #4FC6AA;   /* Hover / active */
-  --primary-300: #7ED8C4;   /* Soft highlights */
-  --primary-100: #E3F6F1;   /* Light background tint */
+  --primary-500: #2FB594; 
+  --primary-400: #4FC6AA;   
+  --primary-300: #7ED8C4;   
+  --primary-100: #E3F6F1;   
 
   /* background */
-  --bg-main: #F9FBFA;       /* App background */
-  --bg-section: #F1FAF7;    /* Dashboard sections */
-  --bg-card: #FFFFFF;      /* Cards / modals */
+  --bg-main: #F9FBFA;      
+  --bg-section: #F1FAF7;    
+  --bg-card: #FFFFFF;    
 
   /* cards */
   --card-border: #E0E0E0;   
@@ -20,10 +20,10 @@
   --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
   /* text colors */
-  --text-primary: #1F2933;   /* Main text */
-  --text-secondary: #616E7C; /* Sub text */
-  --text-muted: #9AA5B1;     /* Disabled / hints */
-  --text-inverse: #FFFFFF;  /* On dark buttons */
+  --text-primary: #1F2933;   
+  --text-secondary: #616E7C; 
+  --text-muted: #9AA5B1;    
+  --text-inverse: #FFFFFF;  
 
   /* money */
   --money-positive: #2FB594;
@@ -37,17 +37,10 @@
   --btn-primary-hover: #4FC6AA;
   --btn-primary-text: #FFFFFF;
 
-  --btn-secondary-bg: #E3F6F1;
-  --btn-secondary-hover: #C9EFE5;
-  --btn-secondary-text: #2FB594;
-
   --btn-danger-bg: #D32F2F;
   --btn-danger-hover: #E53935;
   --btn-danger-text: #FFFFFF;
 
-  /* icons */
-  --icon-primary: #2FB594;
-  --icon-muted: #9AA5B1;
 
   /* input */
   --input-bg: #FFFFFF;
@@ -57,12 +50,6 @@
 
   /* divider */
   --divider: #E5E7EB;
-
-  /* status codes */
-  --success: #2FB594;
-  --warning: #F9A825;
-  --info: #0288D1;
-  --error: #D32F2F;
 }
 
 
@@ -70,13 +57,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
 }
 
 body {
-  /* font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; */
-  font-family: "Poppins", sans-serif;
-  /* background-color: #f5f7fb; */
   background-color: var(--bg-main);
   color: var(--text-primary);
 }
