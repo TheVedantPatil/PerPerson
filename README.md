@@ -44,4 +44,3 @@ npm run dev
 **Backend:** FastAPI, SQLAlchemy, SQLite, Uvicorn
 
 ![Dashboard](frontend/assets/dashboard.png)
-![Expense](frontend\assets\Expense.png)
