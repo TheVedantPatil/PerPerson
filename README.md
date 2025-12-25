@@ -16,7 +16,7 @@
 ## Setup:
 1. Clone the repo 
 ```
-git clone 
+git clone https://github.com/TheVedantPatil/PerPerson.git
 cd perperson
 ```
 
@@ -40,6 +40,8 @@ npm run dev
 **Frontend will run on:** `http://localhost:5173`
 
 ## Tech Stack
+**Frontend:** React, JavaScript  
+**Backend:** FastAPI, SQLAlchemy, SQLite, Uvicorn
 
-- **Frontend:** React, JavaScript  
-- **Backend:** FastAPI, SQLAlchemy, SQLite, Uvicorn
+![Dashboard](frontend/assets/dashboard.png)
+![Expense](frontend\assets\Expense.png)
