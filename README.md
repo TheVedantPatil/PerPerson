@@ -25,7 +25,8 @@ cd perperson
 cd backend
 python -m venv venv
 venv\Scripts\Activate
-pip install -r requirements.txtuvicorn main:app --reload
+pip install -r requirements.txt
+uvicorn main:app --reload
 ```
 
 **Backend will run on:** `http://127.0.0.1:8000` 
