@@ -34,11 +34,11 @@ uvicorn main:app --reload
 3. Frontend
 ```
 cd frontend
-npm instal
+npm install
 npm run dev
 ```
 
-**Frontend will run on:** `http://localhost:5173`
+**Frontend will run on:** `http://127.0.0.1:5173`
 
 ## Tech Stack
 **Frontend:** React, JavaScript  
