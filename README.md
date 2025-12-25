@@ -24,7 +24,7 @@ cd perperson
 ```
 cd backend
 python -m venv venv
-venv\Scripts\activate
+venv\Scripts\Activate
 pip install -r requirements.txtuvicorn main:app --reload
 ```
 
