@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import AddExpense from "./AddExpense";
 import ExpenseList from "./ExpenseList";
 import "../../styles/group.css";
-import { deleteGroup } from "../../api";
 import { toast } from "react-toastify";
-import { leaveGroup } from "../../api";
 import { RxExit } from "react-icons/rx";
 
 import {
@@ -14,6 +12,8 @@ import {
   getGroupBalances,
   getGroupSettlements,
   getGroupMembers,
+  deleteGroup,
+  leaveGroup
 } from "../../api";
 
 function GroupPage({ group, user, onBack, onGroupDeleted }) {
@@ -25,7 +25,42 @@ function GroupPage({ group, user, onBack, onGroupDeleted }) {
 
   // initial data load
   useEffect(() => {
+    let intervalId = null;
+
+    const startPolling = () => { 
+      if(!intervalId) { 
+        intervalId = setInterval(() => { 
+          loadAll();
+        }, 3000);   // Refreshes after 3 seconds
+      };
+    };
+
+    const stopPolling = () => { 
+      if(intervalId) { 
+        clearInterval(intervalId)
+        intervalId = null;
+      }
+    };
+
+    const handleVisibility = () => { 
+      if(document.visibilityState === "visible") { 
+        startPolling();
+      }
+      else { 
+        stopPolling();
+      }
+    };
+
+    // initial load + start polling
     loadAll();
+    startPolling();
+
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    return () => { 
+      stopPolling();
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
   }, [group]);
 
   const loadAll = async () => {
