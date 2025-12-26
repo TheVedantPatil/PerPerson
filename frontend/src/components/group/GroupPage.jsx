@@ -31,7 +31,7 @@ function GroupPage({ group, user, onBack, onGroupDeleted }) {
       if(!intervalId) { 
         intervalId = setInterval(() => { 
           loadAll();
-        }, 3000);
+        }, 3000);   // Refreshes after 3 seconds
       };
     };
 
