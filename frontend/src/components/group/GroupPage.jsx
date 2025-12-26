@@ -4,6 +4,8 @@ import ExpenseList from "./ExpenseList";
 import "../../styles/group.css";
 import { deleteGroup } from "../../api";
 import { toast } from "react-toastify";
+import { leaveGroup } from "../../api";
+import { RxExit } from "react-icons/rx";
 
 import {
   addExpense,
@@ -103,6 +105,18 @@ function GroupPage({ group, user, onBack, onGroupDeleted }) {
     }
   };
 
+  // handel user leave group
+  const handleLeaveGroup = async () => {
+    try {
+      await leaveGroup(group.group_id, user.user_id);
+      toast.success("You left the group");
+      onGroupDeleted(group.group_id); // refresh dashboard list
+      onBack();
+    } catch (err) {
+      toast.error(err.message); // shows unsettled balance error
+    }
+  };
+
   return (
     <div className="container group-container">
       {/* group header */}
@@ -114,12 +128,20 @@ function GroupPage({ group, user, onBack, onGroupDeleted }) {
               Group Code:<span> {group.join_code}</span>
             </p>
           </div>
-
+          {/* Updated and added leave group button */}
           <div style={{ display: "flex", gap: "10px" }}>
             <button className="back-btn" onClick={onBack}>
               Back
             </button>
 
+            {/* Leave button for non-creators */}
+            {group.created_by !== user.user_id && (
+              <button className="leave-btn" onClick={handleLeaveGroup}>
+                <RxExit  />
+              </button>
+            )}
+
+            {/* Delete button stays only for creator */}
             {group.created_by === user.user_id && (
               <button className="danger-btn" onClick={handleDeleteGroup}>
                 Delete Group
@@ -175,9 +197,7 @@ function GroupPage({ group, user, onBack, onGroupDeleted }) {
           <div className="card s-card">
             <h3>Settlements</h3>
 
-            {settlements.length === 0 && (
-              <p className="muted">All settled</p>
-            )}
+            {settlements.length === 0 && <p className="muted">All settled</p>}
 
             <div className="settlement-list">
               {settlements.map((s, i) => (

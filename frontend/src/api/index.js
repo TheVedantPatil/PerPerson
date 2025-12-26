@@ -143,3 +143,18 @@ export async function deleteGroup(groupId, userId) {
 
   return res.json();
 }
+
+// LEAVE GROUP
+export async function leaveGroup(groupId, userId) {
+  const res = await fetch(`${BASE_URL}/groups/${groupId}/leave?user_id=${userId}`, {
+    method: "POST",
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.detail || "Failed to leave group");
+  }
+
+  return data;
+}

@@ -87,10 +87,7 @@ button {
   padding: 10px 14px;
   border-radius: 8px;
   border: none;
-  background-color: #10b981;
-  /* background: linear-gradient(190deg, #045f6e, #10b981); */
   color: var(--btn-primary-text);
-  font-size: 14px;
   cursor: pointer;
 }
 
@@ -98,9 +95,6 @@ button.primary {
   background: linear-gradient(99deg, #10b981, #045f6e);
 }
 
-/* button.primary:hover {
-  background: var(--btn-primary-hover);
-} */
 
 button:hover {
   opacity: 0.9;
@@ -125,7 +119,10 @@ button:hover {
   background: var(--card-hover);
 }
 
-/* Lists */
-/* ul {
-  padding-left: 18px;
-} */
+
+.leave-btn { 
+  display: flex;
+  align-items: center;
+  background-color: var(--btn-danger-bg);
+  font-size: 20px;
+}

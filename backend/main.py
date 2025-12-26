@@ -405,3 +405,45 @@ def delete_group(
 
     return {"message": "Group deleted successfully"}
 
+# Leave Group
+@app.post("/groups/{group_id}/leave")
+def leave_group(group_id: str, user_id: str, db: Session = Depends(get_db)):
+
+    # check group exists
+    group = db.query(models.Group).filter(models.Group.group_id == group_id).first()
+    if not group:
+        raise HTTPException(status_code=404, detail="Group not found")
+
+    # check user is a member
+    member = db.query(models.GroupMember).filter(
+        models.GroupMember.user_id == user_id,
+        models.GroupMember.group_id == group_id
+    ).first()
+
+    if not member:
+        raise HTTPException(status_code=400, detail="User is not a member of this group")
+
+    # calculate balances
+    balances = {}
+
+    members = db.query(models.GroupMember).filter(models.GroupMember.group_id == group_id).all()
+    for m in members:
+        balances[m.user_id] = 0.0
+
+    expenses = db.query(models.Expense).filter(models.Expense.group_id == group_id).all()
+    for expense in expenses:
+        balances[expense.paid_by] += expense.total_amount
+
+    splits = db.query(models.ExpenseSplit).join(models.Expense).filter(models.Expense.group_id == group_id).all()
+    for split in splits:
+        balances[split.user_id] -= split.amount_owed
+
+    # check if user settlement is complete
+    if balances.get(user_id, 0) != 0:
+        raise HTTPException(status_code=403, detail="Cannot leave group until your balance is settled")
+
+    # if settled, remove user
+    db.delete(member)
+    db.commit()
+
+    return {"message": "User left the group successfully"}
