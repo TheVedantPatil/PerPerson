@@ -1,22 +1,38 @@
+/* =========================================================
+   AUTH PAGE LAYOUT
+   ========================================================= */
+
 .auth-page {
   min-height: 100vh;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+
   background: var(--bg-section);
-  padding: 0 10%;
+  padding: 0 8%;
 }
 
+/* =========================================================
+   AUTH CARD
+   ========================================================= */
+
 .auth-card {
-  background: white;
+  background: var(--bg-card);
   display: flex;
   gap: 40px;
-  padding: 50px;
+
+  padding: 48px;
   border-radius: 20px;
+
   width: 100%;
   max-width: 1000px;
-  box-shadow: var(--card-shadow)
+
+  box-shadow: var(--card-shadow);
 }
+
+/* =========================================================
+   AUTH SECTIONS
+   ========================================================= */
 
 .auth-section {
   flex: 1;
@@ -25,19 +41,54 @@
 }
 
 .auth-section h2 {
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+  font-size: 26px;
 }
 
-.auth-section input {
-  margin-bottom: 15px;
+.auth-section p {
+  margin-bottom: 24px;
+  color: var(--text-muted);
+  font-size: 14px;
 }
+
+/* Inputs spacing */
+.auth-section input {
+  margin-bottom: 14px;
+}
+
+/* =========================================================
+   ROW / INLINE GROUPS
+   ========================================================= */
 
 .row {
   display: flex;
   gap: 12px;
 }
 
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
 .divider {
   width: 1px;
-  background: #e5e7eb;
+  background: var(--divider);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .auth-card {
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .divider {
+    display: none;
+  }
+
+  .auth-page {
+    padding: 24px;
+  }
 }

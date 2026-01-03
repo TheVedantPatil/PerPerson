@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import AddExpense from "./AddExpense";
-import ExpenseList from "./ExpenseList";
-import "../../styles/group.css";
 import { toast } from "react-toastify";
-import { RxExit } from "react-icons/rx";
+import Header from "../Header/Header";
+import GroupHeader from "./GroupHeader";
+import GroupLeft from "./GroupLeft";
+import GroupRight from "./GroupRight";
+import "../../styles/group.css";
 
 import {
   addExpense,
@@ -13,7 +14,7 @@ import {
   getGroupSettlements,
   getGroupMembers,
   deleteGroup,
-  leaveGroup
+  leaveGroup,
 } from "../../api";
 
 function GroupPage({ group, user, onBack, onGroupDeleted }) {
@@ -23,53 +24,17 @@ function GroupPage({ group, user, onBack, onGroupDeleted }) {
   const [userMap, setUserMap] = useState({});
   const [expenses, setExpenses] = useState([]);
 
-  // initial data load
   useEffect(() => {
-    let intervalId = null;
-
-    const startPolling = () => { 
-      if(!intervalId) { 
-        intervalId = setInterval(() => { 
-          loadAll();
-        }, 3000);   // Refreshes after 3 seconds
-      };
-    };
-
-    const stopPolling = () => { 
-      if(intervalId) { 
-        clearInterval(intervalId)
-        intervalId = null;
-      }
-    };
-
-    const handleVisibility = () => { 
-      if(document.visibilityState === "visible") { 
-        startPolling();
-      }
-      else { 
-        stopPolling();
-      }
-    };
-
-    // initial load + start polling
     loadAll();
-    startPolling();
-
-    document.addEventListener("visibilitychange", handleVisibility);
-
-    return () => { 
-      stopPolling();
-      document.removeEventListener("visibilitychange", handleVisibility);
-    };
   }, [group]);
 
   const loadAll = async () => {
     try {
-      const data = await getGroupMembers(group.group_id);
-      setMembers(data);
+      const membersData = await getGroupMembers(group.group_id);
+      setMembers(membersData);
 
       const map = {};
-      data.forEach((m) => {
+      membersData.forEach((m) => {
         map[m.user_id] = m.name.split(" ")[0];
       });
       setUserMap(map);
@@ -86,7 +51,6 @@ function GroupPage({ group, user, onBack, onGroupDeleted }) {
     }
   };
 
-  // add expense
   const handleAddExpense = async (data) => {
     try {
       const splitAmount = data.total_amount / data.participants.length;
@@ -109,7 +73,6 @@ function GroupPage({ group, user, onBack, onGroupDeleted }) {
     }
   };
 
-  // delete expense
   const handleDeleteExpense = async (id) => {
     try {
       await deleteExpense(id);
@@ -120,138 +83,63 @@ function GroupPage({ group, user, onBack, onGroupDeleted }) {
     }
   };
 
-  // delete group
   const handleDeleteGroup = async () => {
-    const ok = window.confirm(
-      "This will permanently delete the group. Continue?"
-    );
-    if (!ok) return;
+    if (!window.confirm("This will permanently delete the group. Continue?"))
+      return;
 
     try {
       await deleteGroup(group.group_id, user.user_id);
       toast.success("Group deleted");
-
-      // notify dashboard immediately
       onGroupDeleted(group.group_id);
-
       onBack();
     } catch {
       toast.error("Failed to delete group");
     }
   };
 
-  // handel user leave group
   const handleLeaveGroup = async () => {
     try {
       await leaveGroup(group.group_id, user.user_id);
       toast.success("You left the group");
-      onGroupDeleted(group.group_id); // refresh dashboard list
+      onGroupDeleted(group.group_id);
       onBack();
     } catch (err) {
-      toast.error(err.message); // shows unsettled balance error
+      toast.error(err.message);
     }
   };
 
   return (
-    <div className="container group-container">
-      {/* group header */}
-      <div className="group-header-card">
-        <div className="group-title">
-          <div>
-            <h2>{group.name}</h2>
-            <p className="group-code">
-              Group Code:<span> {group.join_code}</span>
-            </p>
-          </div>
-          {/* Updated and added leave group button */}
-          <div style={{ display: "flex", gap: "10px" }}>
-            <button className="back-btn" onClick={onBack}>
-              Back
-            </button>
+    <>
+      <Header />
 
-            {/* Leave button for non-creators */}
-            {group.created_by !== user.user_id && (
-              <button className="leave-btn" onClick={handleLeaveGroup}>
-                <RxExit  />
-              </button>
-            )}
+      <main className="group-page">
+        <div className="container">
+          <GroupHeader
+            group={group}
+            user={user}
+            onBack={onBack}
+            onLeave={handleLeaveGroup}
+            onDelete={handleDeleteGroup}
+          />
 
-            {/* Delete button stays only for creator */}
-            {group.created_by === user.user_id && (
-              <button className="danger-btn" onClick={handleDeleteGroup}>
-                Delete Group
-              </button>
-            )}
+          <div className="group-grid">
+            <GroupLeft
+              members={members}
+              expenses={expenses}
+              userMap={userMap}
+              onAddExpense={handleAddExpense}
+              onDeleteExpense={handleDeleteExpense}
+            />
+
+            <GroupRight
+              balances={balances}
+              settlements={settlements}
+              userMap={userMap}
+            />
           </div>
         </div>
-      </div>
-
-      {/* main content */}
-      <div className="group-grid">
-        <div className="group-left">
-          <div className="card">
-            <h3>Add Expense</h3>
-            <AddExpense members={members} onAdd={handleAddExpense} />
-          </div>
-
-          <div className="card expense">
-            <h3>Expenses</h3>
-
-            {expenses.length === 0 && (
-              <p className="muted">No expenses added yet</p>
-            )}
-
-            {expenses.length > 0 && (
-              <ExpenseList
-                expenses={expenses}
-                userMap={userMap}
-                onDelete={handleDeleteExpense}
-              />
-            )}
-          </div>
-        </div>
-
-        <div className="group-right">
-          <div className="card">
-            <h3>Balances</h3>
-
-            {balances.length === 0 && <p className="muted">No balances yet</p>}
-
-            <ul className="balance-list">
-              {balances.map((b) => (
-                <li key={b.user_id} className="balance-item">
-                  <span>{userMap[b.user_id] || b.user_id}</span>
-                  <span className={b.balance >= 0 ? "positive" : "negative"}>
-                    ₹ {Number(b.balance).toFixed(2)}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="card s-card">
-            <h3>Settlements</h3>
-
-            {settlements.length === 0 && <p className="muted">All settled</p>}
-
-            <div className="settlement-list">
-              {settlements.map((s, i) => (
-                <div key={i} className="settlement-item">
-                  <div className="settlement-users">
-                    <span className="payer">{userMap[s.from]}</span>
-                    <span className="arrow">pays</span>
-                    <span className="receiver">{userMap[s.to]}</span>
-                  </div>
-                  <div className="settlement-amount">
-                    ₹{Number(s.amount).toFixed(2)}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      </main>
+    </>
   );
 }
 

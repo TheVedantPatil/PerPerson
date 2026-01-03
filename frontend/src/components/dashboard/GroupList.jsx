@@ -1,7 +1,5 @@
-// This file shows data of the group list on the dashboard
-
-function GroupList({ groups, balances, userId, onSelectGroup }) {
-  if (!groups || groups.length === 0) {
+function GroupList({ groups = [], balances = {}, userId, onSelectGroup }) {
+  if (groups.length === 0) {
     return <p className="muted">No groups yet</p>;
   }
 
@@ -29,12 +27,11 @@ function GroupList({ groups, balances, userId, onSelectGroup }) {
             onClick={() => onSelectGroup(group)}
           >
             <div className="group-avatar">
-              {group.name?.[0]}
+              {group.name?.charAt(0).toUpperCase()}
             </div>
 
             <div className="group-info">
               <h4>{group.name}</h4>
-              {/* <p>{group.group_id.members}</p> */}
             </div>
 
             <div className={`group-status ${statusClass}`}>

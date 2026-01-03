@@ -90,7 +90,7 @@ function AuthPage({ onAuth }) {
             }
           />
 
-          <button className="primary" onClick={handleSignup}>
+          <button className="btn btn-primary" onClick={handleSignup}>
             Create Account
           </button>
         </div>
@@ -125,7 +125,7 @@ function AuthPage({ onAuth }) {
             }
           />
 
-          <button className="primary" onClick={handleLogin}>
+          <button className="btn btn-primary" onClick={handleLogin}>
             Sign In
           </button>
         </div>
