@@ -1,71 +1,78 @@
-/* Reset & base */
+/* =========================================================
+   RESET & BASE
+   ========================================================= */
+
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 
 :root {
+  /* =======================================================
+     COLOR SYSTEM
+     ======================================================= */
 
-  /* primary / dashboard */
-  --primary-500: #2FB594; 
-  --primary-400: #4FC6AA;   
-  --primary-300: #7ED8C4;   
-  --primary-100: #E3F6F1;   
+  /* Primary */
+  --primary-500: #2FB594;
+  --primary-400: #4FC6AA;
+  --primary-300: #7ED8C4;
+  --primary-100: #E3F6F1;
 
-  /* background */
-  --bg-main: #F9FBFA;      
-  --bg-section: #F1FAF7;    
-  --bg-card: #FFFFFF;    
+  /* Backgrounds */
+  --bg-main: #F9FBFA;
+  --bg-section: #F1FAF7;
+  --bg-card: #FFFFFF;
 
-  /* cards */
-  --card-border: #E0E0E0;   
+  /* Cards */
+  --card-border: #E0E0E0;
   --card-hover: #F1FAF7;
   --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
-  /* text colors */
-  --text-primary: #1F2933;   
-  --text-secondary: #616E7C; 
-  --text-muted: #9AA5B1;    
-  --text-inverse: #FFFFFF;  
+  /* Text */
+  --text-primary: #1F2933;
+  --text-secondary: #616E7C;
+  --text-muted: #9AA5B1;
+  --text-inverse: #FFFFFF;
 
-  /* money */
+  /* Money */
   --money-positive: #2FB594;
-  --money-positive-bg: #E3F6F1;
-
   --money-negative: #D32F2F;
-  --money-negative-bg: #FDECEA;
 
-  /* buttons */
-  --btn-primary-bg: #2FB594;
+  /* Buttons */
+  --btn-primary-bg: linear-gradient(99deg, #10b981, #045f6e);
   --btn-primary-hover: #4FC6AA;
-  --btn-primary-text: #FFFFFF;
-
   --btn-danger-bg: #D32F2F;
   --btn-danger-hover: #E53935;
-  --btn-danger-text: #FFFFFF;
 
-
-  /* input */
+  /* Inputs */
   --input-bg: #FFFFFF;
   --input-border: #CBD5E1;
   --input-focus: #2FB594;
   --input-placeholder: #9AA5B1;
 
-  /* divider */
+  /* Divider */
   --divider: #E5E7EB;
 }
 
+/* =========================================================
+   GLOBAL RESET
+   ========================================================= */
 
-* {
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
 }
 
 body {
+  font-family: "Poppins", sans-serif;
   background-color: var(--bg-main);
   color: var(--text-primary);
 }
 
-/* Inputs */
+/* =========================================================
+   FORM ELEMENTS
+   ========================================================= */
+
 input,
 select {
   width: 100%;
@@ -73,56 +80,114 @@ select {
   border-radius: 12px;
   border: 1px solid var(--input-border);
   font-size: 14px;
+  background: var(--input-bg);
+}
+
+input::placeholder {
+  color: var(--input-placeholder);
 }
 
 input:focus,
 select:focus {
   outline: none;
-  /* border-color: #10b981; */
   border-color: var(--input-focus);
 }
 
-/* Buttons */
-button {
+/* =========================================================
+   BUTTON SYSTEM (REFACTORED)
+   ========================================================= */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   padding: 10px 14px;
   border-radius: 8px;
   border: none;
-  color: var(--btn-primary-text);
   cursor: pointer;
+  font-size: 14px;
+  font-family: inherit;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
 }
 
-button.primary { 
-  background: linear-gradient(99deg, #10b981, #045f6e);
+.btn-primary {
+  background: var(--btn-primary-bg);
+  color: var(--text-inverse);
 }
 
-
-button:hover {
+.btn-primary:hover {
   opacity: 0.9;
 }
 
-/* muted text */
-.muted {
-  color: var(--text-muted);
-  font-style: italic;
+.btn-danger {
+  background: var(--btn-danger-bg);
+  color: var(--text-inverse);
 }
 
-/* Card (reusable) */
+.btn-danger:hover {
+  background: var(--btn-danger-hover);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-primary);
+}
+
+.btn-ghost:hover {
+  background-color: var(--bg-section);
+}
+
+/* Icon-only button */
+.btn-icon {
+  padding: 8px;
+  border-radius: 8px;
+}
+
+/* =========================================================
+   CARD SYSTEM
+   ========================================================= */
+
 .card {
   background: var(--bg-card);
   padding: 20px;
   border-radius: 12px;
   box-shadow: var(--card-shadow);
-  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  transition: background 0.2s ease;
 }
 
-.card:hover { 
+.card:hover {
   background: var(--card-hover);
 }
 
+.card > * {
+  min-height: 0;
+}
 
-.leave-btn { 
+
+/* =========================================================
+   TEXT HELPERS
+   ========================================================= */
+
+.muted {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* =========================================================
+   ICON / ACTION BUTTONS
+   ========================================================= */
+
+.leave-btn {
   display: flex;
   align-items: center;
+  justify-content: center;
   background-color: var(--btn-danger-bg);
-  font-size: 20px;
+  color: var(--text-inverse);
+  font-size: 18px;
+  padding: 8px;
+  border-radius: 8px;
 }

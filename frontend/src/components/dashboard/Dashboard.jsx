@@ -1,17 +1,18 @@
 // This is the dashboard of the app
 
 import { useEffect, useState } from "react";
+import Header from "../Header/Header";
+import GroupList from "./GroupList";
+import GroupPage from "../group/GroupPage";
+import "../../styles/Dashboard/dashboard.css";
+import "../../styles/Dashboard/grouplist.css";
+import { toast } from "react-toastify"; 
 import {
   getUserGroups,
   joinGroup,
   createGroup,
   getGroupBalances,
 } from "../../api";
-import GroupList from "./GroupList";
-import GroupPage from "../group/GroupPage";
-import "../../styles/dashboard.css";
-import { deleteGroup } from "../../api";
-import { toast } from "react-toastify";
 
 function Dashboard({ user, onLogout }) {
   const [groups, setGroups] = useState([]);
@@ -20,7 +21,7 @@ function Dashboard({ user, onLogout }) {
   const [groupName, setGroupName] = useState("");
   const [selectedGroup, setSelectedGroup] = useState(null);
 
-  // NEW: loading flag to prevent "No Groups" flicker
+  // loading flag
   const [loadingGroups, setLoadingGroups] = useState(true);
 
   // load groups and balances
@@ -38,7 +39,7 @@ function Dashboard({ user, onLogout }) {
           balancesMap[group.group_id] = balances;
         }
         setGroupBalances(balancesMap);
-      } catch (err) {
+      } catch {
         toast.error("Failed to load groups");
       } finally {
         setLoadingGroups(false);
@@ -58,23 +59,9 @@ function Dashboard({ user, onLogout }) {
 
     const myBalance = balances[user.user_id] || 0;
 
-    if (myBalance > 0) {
-      totalOwed += myBalance;
-    } else {
-      totalOwe += Math.abs(myBalance);
-    }
+    if (myBalance > 0) totalOwed += myBalance;
+    else totalOwe += Math.abs(myBalance);
   });
-
-  const handleDeleteGroup = async (groupId) => {
-    try {
-      await deleteGroup(groupId, user.user_id);
-      setGroups((prev) => prev.filter((g) => g.group_id !== groupId));
-      setSelectedGroup(null);
-      toast.success("Group deleted");
-    } catch {
-      toast.error("Failed to delete group");
-    }
-  };
 
   if (selectedGroup) {
     return (
@@ -92,46 +79,60 @@ function Dashboard({ user, onLogout }) {
   return (
     <div className="dashboard-root">
       {/* header */}
-      <header className="header">
-        <div className="container nav">
-          <div className="logo">PerPerson</div>
-          <button className="danger-btn" onClick={onLogout}>
-            Logout
-          </button>
-        </div>
-      </header>
+      <Header onLogout={onLogout} />
 
       {/* main content */}
       <main className="dashboard-content">
-        <div className="container">
-          {/* dashboard card */}
-          <div className="summary-card">
-            <div className="user-details">
-              <h2>
-                {user.first_name} {user.last_name}
-              </h2>
-              <p>
-                Your ID: <strong>{user.user_id}</strong>
-              </p>
+        <div className="container dashboard-grid">
+          {/* LEFT COLUMN */}
+          <div className="dashboard-left">
+            {/* summary */}
+            <div className="summary-card">
+              <div className="user-details">
+                <h2>
+                  {user.first_name} {user.last_name}
+                </h2>
+                <p>
+                  Your ID: <strong>{user.user_id}</strong>
+                </p>
+              </div>
+
+              <div className="summary-split">
+                <div>
+                  <p>You are owed</p>
+                  <strong>₹ {totalOwed.toFixed(2)}</strong>
+                </div>
+
+                <div className="divider" />
+
+                <div>
+                  <p>You owe</p>
+                  <strong>₹ {totalOwe.toFixed(2)}</strong>
+                </div>
+              </div>
             </div>
 
-            <div className="summary-split">
-              <div>
-                <p>You are owed</p>
-                <strong>₹ {totalOwed.toFixed(2)}</strong>
-              </div>
+            {/* groups */}
+            <div className="card groups-card">
+              <h3>Your Groups</h3>
 
-              <div className="divider" />
-
-              <div>
-                <p>You owe</p>
-                <strong>₹ {totalOwe.toFixed(2)}</strong>
-              </div>
+              {loadingGroups ? (
+                <p className="muted">Loading groups...</p>
+              ) : (
+                <div className="groups-scroll">
+                  <GroupList
+                    groups={groups}
+                    balances={groupBalances}
+                    userId={user.user_id}
+                    onSelectGroup={setSelectedGroup}
+                  />
+                </div>
+              )}
             </div>
           </div>
 
-          {/* create and join groups */}
-          <div className="action-grid">
+          {/* RIGHT COLUMN */}
+          <div className="dashboard-right">
             {/* create group */}
             <div className="card action-card">
               <h4>Create Group</h4>
@@ -140,7 +141,8 @@ function Dashboard({ user, onLogout }) {
                 value={groupName}
                 onChange={(e) => setGroupName(e.target.value)}
               />
-              <button className="primary"
+              <button
+                className="btn btn-primary"
                 onClick={async () => {
                   if (!groupName) {
                     toast.error("Group name required");
@@ -150,13 +152,9 @@ function Dashboard({ user, onLogout }) {
                   try {
                     const newGroup = await createGroup(groupName, user.user_id);
 
-                    // inject created_by manually (backend already knows it)
                     setGroups((prev) => [
                       ...prev,
-                      {
-                        ...newGroup,
-                        created_by: user.user_id,
-                      },
+                      { ...newGroup, created_by: user.user_id },
                     ]);
                     setGroupName("");
                     toast.success("Group created");
@@ -177,7 +175,8 @@ function Dashboard({ user, onLogout }) {
                 value={joinCode}
                 onChange={(e) => setJoinCode(e.target.value)}
               />
-              <button className="primary"
+              <button
+                className="btn btn-primary"
                 onClick={async () => {
                   if (!joinCode) {
                     toast.error("Enter a group code");
@@ -201,7 +200,6 @@ function Dashboard({ user, onLogout }) {
                     setJoinCode("");
                     toast.success("Joined group successfully");
                   } catch (err) {
-                    // invalid / random code handled here
                     toast.error(err?.message || "Invalid group code");
                   }
                 }}
@@ -209,25 +207,6 @@ function Dashboard({ user, onLogout }) {
                 Join
               </button>
             </div>
-          </div>
-
-          {/* user groups */}
-          <div>
-            <h3 style={{ marginBottom: "10px", marginLeft: "5px" }}>
-              Your Groups
-            </h3>
-
-            {/* prevent flicker */}
-            {loadingGroups ? (
-              <p className="muted">Loading groups...</p>
-            ) : (
-              <GroupList
-                groups={groups}
-                balances={groupBalances}
-                userId={user.user_id}
-                onSelectGroup={setSelectedGroup}
-              />
-            )}
           </div>
         </div>
       </main>

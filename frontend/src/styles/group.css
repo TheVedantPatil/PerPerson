@@ -1,11 +1,18 @@
-.group-container {
-  padding: 3rem 0;
+/* =========================================================
+   GROUP PAGE WRAPPER
+   ========================================================= */
+
+.group-page {
+  padding: 24px 0;
 }
 
-/* ---------- group header ---------- */
+/* =========================================================
+   GROUP HEADER
+   ========================================================= */
+
 .group-header-card {
   background: linear-gradient(135deg, #045f6e, #10b981);
-  color: white;
+  color: var(--text-inverse);
   padding: 20px 24px;
   border-radius: 20px;
   display: flex;
@@ -24,24 +31,32 @@
   font-weight: 900;
 }
 
+/* Header actions */
 .back-btn {
-  background-color: transparent;
+  background: transparent;
   font-size: 16px;
   cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
 }
 
-.back-btn:hover { 
+.back-btn:hover {
   background-color: var(--primary-500);
+  color: var(--text-inverse);
 }
 
-/* ---------- group grid | rows ---------- */
+/* =========================================================
+   GROUP GRID
+   ========================================================= */
+
 .group-grid {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 30px;
+  align-items: start;
 }
 
-/* grid colums */
+/* Columns */
 .group-left,
 .group-right {
   display: flex;
@@ -49,7 +64,10 @@
   gap: 25px;
 }
 
-/* ---------- add expense form ---------- */
+/* =========================================================
+   ADD EXPENSE FORM
+   ========================================================= */
+
 .add-expense {
   display: flex;
   flex-direction: column;
@@ -65,11 +83,14 @@
 
 .label {
   font-size: 14px;
-  color: #374151;
+  color: var(--text-secondary);
   font-weight: 600;
 }
 
-/* members chip */
+/* =========================================================
+   MEMBER CHIPS
+   ========================================================= */
+
 .member-chips {
   display: flex;
   flex-wrap: wrap;
@@ -80,26 +101,25 @@
 .member-chip {
   padding: 8px 14px;
   border-radius: 999px;
-  background: #c0dfe4;
+  background: var(--primary-100);
   font-size: 13px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .member-chip:hover {
   background: var(--primary-400);
-  color: white;
+  color: var(--text-inverse);
 }
 
 .member-chip.active {
   background: var(--primary-500);
-  color: white;
+  color: var(--text-inverse);
 }
 
-/* ---------- expense list tab ----------*/
-/* .expense h3 { 
-  margin-left: 8px;
-} */
+/* =========================================================
+   EXPENSE LIST
+   ========================================================= */
 
 .expense-list {
   display: flex;
@@ -110,7 +130,6 @@
 
 .expense-item {
   background: #f4f4f4;
-  /* box-shadow: var(--card-shadow); */
   border-radius: 14px;
   padding: 14px 16px;
   display: flex;
@@ -132,7 +151,7 @@
 .expense-sub {
   margin: 4px 0 0;
   font-size: 13px;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .expense-amount {
@@ -144,13 +163,16 @@
   align-self: flex-end;
   background: none;
   border: none;
-  color: #dc2626;
+  color: var(--money-negative);
   font-size: 14px;
   cursor: pointer;
   padding: 0;
 }
 
-/* ---------- group balance tab ---------- */
+/* =========================================================
+   BALANCES
+   ========================================================= */
+
 .balance-list {
   list-style: none;
   padding: 0;
@@ -161,7 +183,7 @@
   display: flex;
   justify-content: space-between;
   padding: 10px 0;
-  border-bottom: 1px solid #f1f1f1;
+  border-bottom: 1px solid var(--divider);
 }
 
 .balance-item:last-child {
@@ -178,14 +200,17 @@
   font-weight: 600;
 }
 
-/* settlements tab */
+/* =========================================================
+   SETTLEMENTS
+   ========================================================= */
+
 .settlement-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
   margin-top: 10px;
   max-height: 250px;
-  overflow: auto;
+  overflow-y: auto;
 }
 
 .settlement-item {
@@ -206,12 +231,12 @@
 
 .payer {
   font-weight: 600;
-  color: #dc2626;
+  color: var(--money-negative);
 }
 
 .receiver {
   font-weight: 600;
-  color: #16a34a;
+  color: var(--money-positive);
 }
 
 .arrow {
@@ -223,4 +248,12 @@
   font-size: 15px;
 }
 
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
 
+@media (max-width: 768px) {
+  .group-grid {
+    grid-template-columns: 1fr;
+  }
+}

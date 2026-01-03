@@ -92,7 +92,7 @@ function AddExpense({ members, onAdd }) {
         </div>
       </div>
 
-      <button className="primary" onClick={handleSubmit}>
+      <button className="btn btn-primary" onClick={handleSubmit}>
         Add Expense
       </button>
     </div>
