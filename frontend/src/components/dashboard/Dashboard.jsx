@@ -1,12 +1,14 @@
 // This is the dashboard of the app
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Header from "../Header/Header";
 import GroupList from "./GroupList";
 import GroupPage from "../group/GroupPage";
 import "../../styles/Dashboard/dashboard.css";
 import "../../styles/Dashboard/grouplist.css";
-import { toast } from "react-toastify"; 
+import { toast } from "react-toastify";
+import usePolling from "../../hooks/usePolling";
+
 import {
   getUserGroups,
   joinGroup,
@@ -20,36 +22,85 @@ function Dashboard({ user, onLogout }) {
   const [joinCode, setJoinCode] = useState("");
   const [groupName, setGroupName] = useState("");
   const [selectedGroup, setSelectedGroup] = useState(null);
-
-  // loading flag
   const [loadingGroups, setLoadingGroups] = useState(true);
 
-  // load groups and balances
-  useEffect(() => {
-    async function loadData() {
-      try {
-        setLoadingGroups(true);
+  // keep previous snapshot for comparison
+  const prevGroupsRef = useRef([]);
+  const prevBalancesRef = useRef({});
 
-        const userGroups = await getUserGroups(user.user_id);
-        setGroups(userGroups);
+  /* =========================================================
+     HELPERS — CHANGE DETECTION
+     ========================================================= */
 
-        const balancesMap = {};
-        for (const group of userGroups) {
-          const balances = await getGroupBalances(group.group_id);
-          balancesMap[group.group_id] = balances;
-        }
-        setGroupBalances(balancesMap);
-      } catch {
-        toast.error("Failed to load groups");
-      } finally {
-        setLoadingGroups(false);
+  const haveGroupsChanged = (prev, next) => {
+    if (prev.length !== next.length) return true;
+    return prev.some(
+      (g, i) => g.group_id !== next[i]?.group_id
+    );
+  };
+
+  const haveBalancesChanged = (prev, next) => {
+    return JSON.stringify(prev) !== JSON.stringify(next);
+  };
+
+  /* =========================================================
+     LOAD DASHBOARD DATA
+     ========================================================= */
+
+  const loadDashboard = async (isInitial = false) => {
+    try {
+      if (isInitial) setLoadingGroups(true);
+
+      const userGroups = await getUserGroups(user.user_id);
+
+      const balancesMap = {};
+      for (const group of userGroups) {
+        balancesMap[group.group_id] = await getGroupBalances(
+          group.group_id
+        );
       }
-    }
 
-    loadData();
+      // update ONLY if something changed
+      if (haveGroupsChanged(prevGroupsRef.current, userGroups)) {
+        setGroups(userGroups);
+        prevGroupsRef.current = userGroups;
+      }
+
+      if (haveBalancesChanged(prevBalancesRef.current, balancesMap)) {
+        setGroupBalances(balancesMap);
+        prevBalancesRef.current = balancesMap;
+      }
+    } catch {
+      if (isInitial) toast.error("Failed to load groups");
+    } finally {
+      if (isInitial) setLoadingGroups(false);
+    }
+  };
+
+  /* =========================================================
+     INITIAL LOAD
+     ========================================================= */
+
+  useEffect(() => {
+    loadDashboard(true);
   }, [user]);
 
-  // calculate totals
+  /* =========================================================
+     POLLING (NO FLICKER)
+     ========================================================= */
+
+  usePolling(
+    () => {
+      loadDashboard(false);
+    },
+    5000,
+    !selectedGroup
+  );
+
+  /* =========================================================
+     CALCULATE TOTALS
+     ========================================================= */
+
   let totalOwed = 0;
   let totalOwe = 0;
 
@@ -58,10 +109,13 @@ function Dashboard({ user, onLogout }) {
     if (!balances) return;
 
     const myBalance = balances[user.user_id] || 0;
-
     if (myBalance > 0) totalOwed += myBalance;
     else totalOwe += Math.abs(myBalance);
   });
+
+  /* =========================================================
+     GROUP PAGE ROUTING
+     ========================================================= */
 
   if (selectedGroup) {
     return (
@@ -76,17 +130,19 @@ function Dashboard({ user, onLogout }) {
     );
   }
 
+  /* =========================================================
+     RENDER
+     ========================================================= */
+
   return (
     <div className="dashboard-root">
-      {/* header */}
       <Header onLogout={onLogout} />
 
-      {/* main content */}
       <main className="dashboard-content">
         <div className="container dashboard-grid">
           {/* LEFT COLUMN */}
           <div className="dashboard-left">
-            {/* summary */}
+            {/* SUMMARY */}
             <div className="summary-card">
               <div className="user-details">
                 <h2>
@@ -112,11 +168,11 @@ function Dashboard({ user, onLogout }) {
               </div>
             </div>
 
-            {/* groups */}
+            {/* GROUPS */}
             <div className="card groups-card">
               <h3>Your Groups</h3>
 
-              {loadingGroups ? (
+              {loadingGroups && groups.length === 0 ? (
                 <p className="muted">Loading groups...</p>
               ) : (
                 <div className="groups-scroll">
@@ -133,7 +189,7 @@ function Dashboard({ user, onLogout }) {
 
           {/* RIGHT COLUMN */}
           <div className="dashboard-right">
-            {/* create group */}
+            {/* CREATE GROUP */}
             <div className="card action-card">
               <h4>Create Group</h4>
               <input
@@ -150,14 +206,10 @@ function Dashboard({ user, onLogout }) {
                   }
 
                   try {
-                    const newGroup = await createGroup(groupName, user.user_id);
-
-                    setGroups((prev) => [
-                      ...prev,
-                      { ...newGroup, created_by: user.user_id },
-                    ]);
+                    await createGroup(groupName, user.user_id);
                     setGroupName("");
                     toast.success("Group created");
+                    loadDashboard(false);
                   } catch {
                     toast.error("Failed to create group");
                   }
@@ -167,7 +219,7 @@ function Dashboard({ user, onLogout }) {
               </button>
             </div>
 
-            {/* join group */}
+            {/* JOIN GROUP */}
             <div className="card action-card">
               <h4>Join Group</h4>
               <input
@@ -185,20 +237,9 @@ function Dashboard({ user, onLogout }) {
 
                   try {
                     await joinGroup(user.user_id, joinCode);
-
-                    const updated = await getUserGroups(user.user_id);
-                    setGroups(updated);
-
-                    const balancesMap = {};
-                    for (const g of updated) {
-                      balancesMap[g.group_id] = await getGroupBalances(
-                        g.group_id
-                      );
-                    }
-                    setGroupBalances(balancesMap);
-
                     setJoinCode("");
                     toast.success("Joined group successfully");
+                    loadDashboard(false);
                   } catch (err) {
                     toast.error(err?.message || "Invalid group code");
                   }

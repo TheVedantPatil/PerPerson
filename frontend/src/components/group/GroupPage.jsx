@@ -5,6 +5,7 @@ import GroupHeader from "./GroupHeader";
 import GroupLeft from "./GroupLeft";
 import GroupRight from "./GroupRight";
 import "../../styles/group.css";
+import  usePolling  from "../../hooks/usePolling";
 
 import {
   addExpense,
@@ -24,9 +25,14 @@ function GroupPage({ group, user, onBack, onGroupDeleted }) {
   const [userMap, setUserMap] = useState({});
   const [expenses, setExpenses] = useState([]);
 
-  useEffect(() => {
-    loadAll();
-  }, [group]);
+useEffect(() => {
+  loadAll(); 
+}, [group]);
+
+usePolling(() => {
+  loadAll();
+}, 3000, !!group);
+
 
   const loadAll = async () => {
     try {
