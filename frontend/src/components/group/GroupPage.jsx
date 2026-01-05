@@ -4,8 +4,9 @@ import Header from "../Header/Header";
 import GroupHeader from "./GroupHeader";
 import GroupLeft from "./GroupLeft";
 import GroupRight from "./GroupRight";
+import usePolling from "../../hooks/usePolling";
+import ConfirmModal from "../confirmModal";
 import "../../styles/group.css";
-import  usePolling  from "../../hooks/usePolling";
 
 import {
   addExpense,
@@ -24,15 +25,18 @@ function GroupPage({ group, user, onBack, onGroupDeleted }) {
   const [members, setMembers] = useState([]);
   const [userMap, setUserMap] = useState({});
   const [expenses, setExpenses] = useState([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-useEffect(() => {
-  loadAll(); 
-}, [group]);
+  /* =========================
+     LOAD GROUP DATA
+     ========================= */
+  useEffect(() => {
+    loadAll();
+  }, [group]);
 
-usePolling(() => {
-  loadAll();
-}, 3000, !!group);
-
+  usePolling(() => {
+    loadAll();
+  }, 3000, !!group);
 
   const loadAll = async () => {
     try {
@@ -47,7 +51,10 @@ usePolling(() => {
 
       const bal = await getGroupBalances(group.group_id);
       setBalances(
-        Object.entries(bal).map(([u, b]) => ({ user_id: u, balance: b }))
+        Object.entries(bal).map(([u, b]) => ({
+          user_id: u,
+          balance: b,
+        }))
       );
 
       setSettlements(await getGroupSettlements(group.group_id));
@@ -57,6 +64,9 @@ usePolling(() => {
     }
   };
 
+  /* =========================
+     EXPENSE ACTIONS
+     ========================= */
   const handleAddExpense = async (data) => {
     try {
       const splitAmount = data.total_amount / data.participants.length;
@@ -89,10 +99,10 @@ usePolling(() => {
     }
   };
 
-  const handleDeleteGroup = async () => {
-    if (!window.confirm("This will permanently delete the group. Continue?"))
-      return;
-
+  /* =========================
+     GROUP ACTIONS
+     ========================= */
+  const confirmDeleteGroup = async () => {
     try {
       await deleteGroup(group.group_id, user.user_id);
       toast.success("Group deleted");
@@ -100,6 +110,8 @@ usePolling(() => {
       onBack();
     } catch {
       toast.error("Failed to delete group");
+    } finally {
+      setShowDeleteModal(false);
     }
   };
 
@@ -125,7 +137,7 @@ usePolling(() => {
             user={user}
             onBack={onBack}
             onLeave={handleLeaveGroup}
-            onDelete={handleDeleteGroup}
+            onDelete={() => setShowDeleteModal(true)}
           />
 
           <div className="group-grid">
@@ -145,6 +157,17 @@ usePolling(() => {
           </div>
         </div>
       </main>
+
+      <ConfirmModal
+        open={showDeleteModal}
+        title="Delete Group?"
+        message="This will permanently delete the group and all its expenses. This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        danger
+        onCancel={() => setShowDeleteModal(false)}
+        onConfirm={confirmDeleteGroup}
+      />
     </>
   );
 }
