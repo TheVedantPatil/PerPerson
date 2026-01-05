@@ -1,5 +1,3 @@
-import "./../../styles/header.css";
-
 function Header({ onLogout }) {
   return (
     <header className="header">

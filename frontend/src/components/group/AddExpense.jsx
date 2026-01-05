@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 function AddExpense({ members, onAdd }) {
   const [amount, setAmount] = useState("");
@@ -14,14 +15,16 @@ function AddExpense({ members, onAdd }) {
     );
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
     if (
       !amount ||
       !description ||
       !paidBy ||
       selectedMembers.length === 0
     ) {
-      alert("Fill all fields");
+      toast.error("Please fill all fields");
       return;
     }
 
@@ -39,7 +42,7 @@ function AddExpense({ members, onAdd }) {
   };
 
   return (
-    <div className="add-expense">
+    <form className="add-expense" onSubmit={handleSubmit}>
       <div className="form-row">
         <input
           placeholder="Expense description"
@@ -92,10 +95,10 @@ function AddExpense({ members, onAdd }) {
         </div>
       </div>
 
-      <button className="btn btn-primary" onClick={handleSubmit}>
+      <button className="btn btn-primary" type="submit">
         Add Expense
       </button>
-    </div>
+    </form>
   );
 }
 

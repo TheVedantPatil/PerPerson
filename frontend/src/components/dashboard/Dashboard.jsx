@@ -4,10 +4,12 @@ import { useEffect, useState, useRef } from "react";
 import Header from "../Header/Header";
 import GroupList from "./GroupList";
 import GroupPage from "../group/GroupPage";
-import "../../styles/Dashboard/dashboard.css";
-import "../../styles/Dashboard/grouplist.css";
 import { toast } from "react-toastify";
 import usePolling from "../../hooks/usePolling";
+import "../../styles/Dashboard/dashboard.css";
+import "../../styles/Dashboard/grouplist.css";
+import "./../../styles/header.css";
+
 
 import {
   getUserGroups,
@@ -28,25 +30,17 @@ function Dashboard({ user, onLogout }) {
   const prevGroupsRef = useRef([]);
   const prevBalancesRef = useRef({});
 
-  /* =========================================================
-     HELPERS — CHANGE DETECTION
-     ========================================================= */
-
+  /* === CHANGE DETECTION ==== */
   const haveGroupsChanged = (prev, next) => {
     if (prev.length !== next.length) return true;
-    return prev.some(
-      (g, i) => g.group_id !== next[i]?.group_id
-    );
+    return prev.some((g, i) => g.group_id !== next[i]?.group_id);
   };
 
   const haveBalancesChanged = (prev, next) => {
     return JSON.stringify(prev) !== JSON.stringify(next);
   };
 
-  /* =========================================================
-     LOAD DASHBOARD DATA
-     ========================================================= */
-
+  /* ==== LOAD DASHBOARD DATA === */
   const loadDashboard = async (isInitial = false) => {
     try {
       if (isInitial) setLoadingGroups(true);
@@ -55,12 +49,10 @@ function Dashboard({ user, onLogout }) {
 
       const balancesMap = {};
       for (const group of userGroups) {
-        balancesMap[group.group_id] = await getGroupBalances(
-          group.group_id
-        );
+        balancesMap[group.group_id] = await getGroupBalances(group.group_id);
       }
 
-      // update ONLY if something changed
+      // update if something changed
       if (haveGroupsChanged(prevGroupsRef.current, userGroups)) {
         setGroups(userGroups);
         prevGroupsRef.current = userGroups;
@@ -77,17 +69,13 @@ function Dashboard({ user, onLogout }) {
     }
   };
 
-  /* =========================================================
-     INITIAL LOAD
-     ========================================================= */
+  /* ==== INITIAL LOAD ==== */
 
   useEffect(() => {
     loadDashboard(true);
   }, [user]);
 
-  /* =========================================================
-     POLLING (NO FLICKER)
-     ========================================================= */
+  /* ==== POLLING ==== */
 
   usePolling(
     () => {
@@ -97,10 +85,7 @@ function Dashboard({ user, onLogout }) {
     !selectedGroup
   );
 
-  /* =========================================================
-     CALCULATE TOTALS
-     ========================================================= */
-
+  /* ==== CALCULATE TOTALS ==== */
   let totalOwed = 0;
   let totalOwe = 0;
 
@@ -112,10 +97,6 @@ function Dashboard({ user, onLogout }) {
     if (myBalance > 0) totalOwed += myBalance;
     else totalOwe += Math.abs(myBalance);
   });
-
-  /* =========================================================
-     GROUP PAGE ROUTING
-     ========================================================= */
 
   if (selectedGroup) {
     return (
@@ -129,10 +110,6 @@ function Dashboard({ user, onLogout }) {
       />
     );
   }
-
-  /* =========================================================
-     RENDER
-     ========================================================= */
 
   return (
     <div className="dashboard-root">
@@ -190,64 +167,75 @@ function Dashboard({ user, onLogout }) {
           {/* RIGHT COLUMN */}
           <div className="dashboard-right">
             {/* CREATE GROUP */}
-            <div className="card action-card">
-              <h4>Create Group</h4>
-              <input
-                placeholder="Group name"
-                value={groupName}
-                onChange={(e) => setGroupName(e.target.value)}
-              />
-              <button
-                className="btn btn-primary"
-                onClick={async () => {
-                  if (!groupName) {
-                    toast.error("Group name required");
-                    return;
-                  }
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
 
-                  try {
-                    await createGroup(groupName, user.user_id);
-                    setGroupName("");
-                    toast.success("Group created");
-                    loadDashboard(false);
-                  } catch {
-                    toast.error("Failed to create group");
-                  }
-                }}
-              >
-                Create
-              </button>
-            </div>
+                if (!groupName) {
+                  toast.error("Group name required");
+                  return;
+                }
+
+                try {
+                  await createGroup(groupName, user.user_id);
+                  setGroupName("");
+                  toast.success("Group created");
+                  loadDashboard(false);
+                } catch {
+                  toast.error("Failed to create group");
+                }
+              }}
+            >
+              <div className="card action-card">
+                <h4>Create Group</h4>
+
+                <input
+                  placeholder="Group name"
+                  value={groupName}
+                  onChange={(e) => setGroupName(e.target.value)}
+                />
+
+                <button className="btn btn-primary" type="submit">
+                  Create
+                </button>
+              </div>
+            </form>
 
             {/* JOIN GROUP */}
-            <div className="card action-card">
-              <h4>Join Group</h4>
-              <input
-                placeholder="Enter group code"
-                value={joinCode}
-                onChange={(e) => setJoinCode(e.target.value)}
-              />
-              <button
-                className="btn btn-primary"
-                onClick={async () => {
-                  if (!joinCode) {
-                    toast.error("Enter a group code");
-                    return;
-                  }
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
 
-                  try {
-                    await joinGroup(user.user_id, joinCode);
-                    setJoinCode("");
-                    toast.success("Joined group successfully");
-                    loadDashboard(false);
-                  } catch (err) {
-                    toast.error(err?.message || "Invalid group code");
-                  }
-                }}
-              >
-                Join
-              </button>
-            </div>
+                if (!joinCode) {
+                  toast.error("Enter a group code");
+                  return;
+                }
+
+                try {
+                  await joinGroup(user.user_id, joinCode);
+                  setJoinCode("");
+                  toast.success("Joined group successfully");
+                  loadDashboard(false);
+                } catch (err) {
+                  toast.error(err?.message);
+                  setJoinCode("");
+                }
+              }}
+            >
+              <div className="card action-card">
+                <h4>Join Group</h4>
+
+                <input
+                  placeholder="Enter group code"
+                  value={joinCode}
+                  onChange={(e) => setJoinCode(e.target.value)}
+                />
+
+                <button className="btn btn-primary" type="submit">
+                  Join
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </main>
