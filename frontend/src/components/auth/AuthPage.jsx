@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { signup, login } from "../../api";
-import '../../styles/auth.css'
+import { toast } from "react-toastify";
+import "../../styles/auth.css";
 
 function AuthPage({ onAuth }) {
   const [signupData, setSignupData] = useState({
@@ -15,32 +16,60 @@ function AuthPage({ onAuth }) {
     password: "",
   });
 
-  const handleSignup = async () => {
+  /* ======================
+     SIGNUP
+     ====================== */
+  const handleSignup = async (e) => {
+    e.preventDefault();
+
+    const { first_name, last_name, email, password } = signupData;
+
+    if (!first_name || !last_name || !email || !password) {
+      toast.error("All fields are required");
+      return;
+    }
+
     try {
       const user = await signup(signupData);
       localStorage.setItem("user", JSON.stringify(user));
       onAuth(user);
+      toast.success("Account created successfully");
     } catch (err) {
-      alert(err.message);
+      if (err.status === 422) {
+        toast.error("All fields are required");
+      } else {
+        toast.error(err?.message || "Signup failed");
+      }
     }
   };
 
-  const handleLogin = async () => {
+  /* ======================
+     LOGIN
+     ====================== */
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    if (!loginData.email || !loginData.password) {
+      toast.error("Email and password are required");
+      return;
+    }
+
     try {
       const user = await login(loginData);
       localStorage.setItem("user", JSON.stringify(user));
       onAuth(user);
-    } catch (err) {
-      alert(err.message);
+      toast.success("Logged in successfully");
+    } 
+    catch (err) {
+      toast.error(err?.message || "Invalid email or password");
     }
   };
 
   return (
     <div className="auth-page">
       <div className="auth-card">
-
-        {/* signup page */}
-        <div className="auth-section">
+        {/* ================= SIGNUP FORM ================= */}
+        <form className="auth-section" onSubmit={handleSignup}>
           <h2>Create account</h2>
 
           <div className="row">
@@ -90,16 +119,16 @@ function AuthPage({ onAuth }) {
             }
           />
 
-          <button className="btn btn-primary" onClick={handleSignup}>
+          <button className="btn btn-primary" type="submit">
             Create Account
           </button>
-        </div>
+        </form>
 
-        {/* middle line */}
+        {/* middle divider */}
         <div className="divider" />
 
-        {/* login page */}
-        <div className="auth-section">
+        {/* ================= LOGIN FORM ================= */}
+        <form className="auth-section" onSubmit={handleLogin}>
           <h2>Login</h2>
 
           <input
@@ -125,10 +154,10 @@ function AuthPage({ onAuth }) {
             }
           />
 
-          <button className="btn btn-primary" onClick={handleLogin}>
+          <button className="btn btn-primary" type="submit">
             Sign In
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );

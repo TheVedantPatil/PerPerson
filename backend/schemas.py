@@ -1,16 +1,17 @@
 # This defines what the frontend can send and what backend can return
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 class UserSignup(BaseModel):
-    first_name: str
-    last_name: str
+    first_name: str = Field(..., min_length=1)
+    last_name: str = Field(..., min_length=1)
     email: EmailStr
-    password: str
+    password: str = Field(..., min_length=1)
+
 
 class UserLogin(BaseModel):
     email: EmailStr
-    password: str
+    password: str = Field(..., min_length=1)
 
 class UserAuthResponse(BaseModel):
     user_id: str
